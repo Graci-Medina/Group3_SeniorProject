@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CopyCook - Sign Up</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <nav class="navbar">
+        <div class="logo">
+            <img src="logo.png" alt="CopyCook Logo">
+        </div>
+        <div class="nav-links">
+            <a href="#about">About</a>
+            <a href="#contact">Contact</a>
+            <button class="login-btn" onclick="window.location.href='index.html'">Login</button>
+        </div>
+    </nav>
+
+    <main>
+        <div class="login-container">
+            <div class="chef-hat-icon">
+                <img src="logo.png" alt="CopyCook Logo">
+            </div>
+            
+            <h1>Welcome to CopyCook</h1>
+            
+            <form id="signupForm">
+                <input type="email" id="email" placeholder="Email" required>
+                <input type="password" id="password" placeholder="Password" required>
+                <input type="password" id="confirmPassword" placeholder="Confirm password" required>
+                <p class="password-warning" id="passwordWarning">Passwords do not match</p>
+                
+                <button type="submit" class="submit-btn signup-btn" id="submitBtn">Sign Up</button>
+                
+                <p class="signup-link">
+                    Already have an account? <a href="index.html">Log in</a>
+                </p>
+                
+                <div id="message" class="message"></div>
+            </form>
+        </div>
+    </main>
+
+    <!-- Firebase SDK -->
+    <script type="module" src="firebase-config.js"></script>
+    <script type="module" src="signup.js"></script>
+</body>
+</html>
