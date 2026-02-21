@@ -3,7 +3,7 @@ import { getAuth } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth
 import { getAnalytics } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-analytics.js";
 
 const firebaseConfig = {
-  apiKey: "AIzaSyBrO5KxeMWGtUSYCATNE6DI0a7V4UJu44U",
+  apiKey: "",
   authDomain: "copycookdatabase.firebaseapp.com",
   projectId: "copycookdatabase",
   storageBucket: "copycookdatabase.firebasestorage.app",
