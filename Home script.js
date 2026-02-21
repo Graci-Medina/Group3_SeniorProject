@@ -1,25 +1,29 @@
-// AVATAR SETUP — reads from localStorage set during signup
-function loadAvatar() {
-    const profileAvatar = document.getElementById('profileAvatar');
-    if (!profileAvatar) return;
+// AVATAR INITIAL SETUP
+
+document.addEventListener("DOMContentLoaded", function () {
+    const profileContainer = document.getElementById('profileAvatar');
+    if (!profileContainer) return;
 
     const initial = localStorage.getItem('userInitial');
     const color = localStorage.getItem('userAvatarColor');
     const name = localStorage.getItem('userDisplayName');
 
     if (initial && color) {
-        profileAvatar.innerHTML = initial;
-        profileAvatar.style.backgroundColor = color;
-        profileAvatar.style.display = 'flex';
-        profileAvatar.style.alignItems = 'center';
-        profileAvatar.style.justifyContent = 'center';
-        profileAvatar.style.color = 'white';
-        profileAvatar.style.fontSize = '20px';
-        profileAvatar.style.fontWeight = '700';
-        profileAvatar.style.fontFamily = "'Poppins', sans-serif";
-        profileAvatar.title = name || '';
+        // Replace the <img> with an initial avatar div
+        profileContainer.innerHTML = '';
+        profileContainer.style.backgroundColor = color;
+        profileContainer.style.display = 'flex';
+        profileContainer.style.alignItems = 'center';
+        profileContainer.style.justifyContent = 'center';
+        profileContainer.style.color = 'white';
+        profileContainer.style.fontSize = '20px';
+        profileContainer.style.fontWeight = '700';
+        profileContainer.style.fontFamily = "'Poppins', sans-serif";
+        profileContainer.style.letterSpacing = '0.5px';
+        profileContainer.textContent = initial;
+        profileContainer.title = name || '';
     }
-}
+});
 
 // LOGOUT POPUP FUNCTIONS
 
@@ -39,6 +43,18 @@ function handleLogout() {
     sessionStorage.clear();
     window.location.href = '../login.html';
 }
+
+// Close popup when clicking outside
+document.addEventListener('DOMContentLoaded', function () {
+    const popup = document.getElementById('logoutPopup');
+    if (popup) {
+        popup.addEventListener('click', function (event) {
+            if (event.target === popup) {
+                closeLogoutPopup();
+            }
+        });
+    }
+});
 
 // LOAD RANDOM RECIPES FROM MEALDB
 
@@ -77,30 +93,21 @@ async function loadRandomRecipes() {
     isLoading = false;
 }
 
-// SINGLE DOMContentLoaded — everything starts here
+// INITIAL LOAD
+
 document.addEventListener("DOMContentLoaded", function () {
-
-    // Load avatar
-    loadAvatar();
-
-    // Load recipes
     loadRandomRecipes();
+});
 
-    // Close logout popup when clicking outside
-    const popup = document.getElementById('logoutPopup');
-    if (popup) {
-        popup.addEventListener('click', function (event) {
-            if (event.target === popup) closeLogoutPopup();
-        });
-    }
+// INFINITE SCROLL
 
-    // Infinite scroll
+document.addEventListener("DOMContentLoaded", function () {
     const grid = document.getElementById("foodGrid");
-    if (grid) {
-        grid.addEventListener("scroll", () => {
-            if (grid.scrollTop + grid.clientHeight >= grid.scrollHeight - 200 && !isLoading) {
-                loadRandomRecipes();
-            }
-        });
-    }
+    if (!grid) return;
+
+    grid.addEventListener("scroll", () => {
+        if (grid.scrollTop + grid.clientHeight >= grid.scrollHeight - 200 && !isLoading) {
+            loadRandomRecipes();
+        }
+    });
 });
