@@ -87,6 +87,7 @@ signupForm.addEventListener('submit', async function (e) {
     try {
         const userCredential = await createUserWithEmailAndPassword(auth, email, password);
 
+
         // Save display name to Firebase Auth profile
         await updateProfile(userCredential.user, { displayName: name });
 
