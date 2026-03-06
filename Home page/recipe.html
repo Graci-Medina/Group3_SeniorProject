@@ -142,7 +142,6 @@
             display: flex;
             flex-direction: column;
             gap: 16px;
-            /* Fixed height, no scroll — image stays put */
             overflow: hidden;
         }
 
@@ -419,8 +418,6 @@
 </div>
 
 <script>
-const SPOONACULAR_KEY = '8b416bc6bc6a48aaae64933c641d722c';
-
 // ── Avatar ──
 (function loadAvatar() {
     const el = document.getElementById('profileAvatar');
@@ -537,87 +534,27 @@ function renderMealDB(meal) {
     });
 }
 
-// ── Spoonacular renderer ──
-function renderSpoonacular(recipe) {
-    // Ingredients
-    const ingredientRows = (recipe.extendedIngredients || []).map(ing => `
-        <div class="ingredient-row">
-            <span class="ingredient-dot"></span>
-            <span class="ingredient-measure">${ing.measures?.us?.amount ? ing.measures.us.amount + ' ' + ing.measures.us.unitShort : ing.original}</span>
-            <span class="ingredient-name">${ing.nameClean || ing.name}</span>
-        </div>`).join('');
+// ── Load recipe from MealDB only ──
+async function loadRecipe() {
+    const params = new URLSearchParams(window.location.search);
+    const mealId = params.get('id');
+    const body   = document.getElementById('recipeBody');
 
-    // Instructions — Spoonacular returns analyzed steps array
-    let steps = [];
-    if (recipe.analyzedInstructions && recipe.analyzedInstructions.length > 0) {
-        steps = recipe.analyzedInstructions[0].steps.map(s => s.step);
-    } else if (recipe.instructions) {
-        // Fallback: plain HTML instructions — strip tags and split
-        steps = recipe.instructions
-            .replace(/<[^>]+>/g, ' ')
-            .split(/\.\s+/)
-            .map(s => s.trim())
-            .filter(s => s.length > 10);
+    if (!mealId) {
+        body.innerHTML = '<div class="loading-state">No recipe selected.</div>';
+        return;
     }
 
-    const stepRows = steps.map(s => `<div class="instruction-step">${s}</div>`).join('');
-
-    const cuisines = (recipe.cuisines || []).join(', ');
-    const dishTypes = (recipe.dishTypes || []).join(', ');
-    const tag = [cuisines, dishTypes].filter(Boolean).join(' · ');
-
-    // Add servings + time info if available
-    const metaTag = [
-        recipe.servings ? `🍽 ${recipe.servings} servings` : '',
-        recipe.readyInMinutes ? `⏱ ${recipe.readyInMinutes} min` : ''
-    ].filter(Boolean).join('  ·  ');
-
-    document.getElementById('recipeBody').innerHTML = buildLayout({
-        title: recipe.title,
-        image: recipe.image || '',
-        tag: [tag, metaTag].filter(Boolean).join('  |  '),
-        ingredientRows: ingredientRows || '<p style="color:#9FB19F">No ingredient data available.</p>',
-        stepRows: stepRows || '<p style="color:#9FB19F">No instructions available.</p>'
-    });
-}
-
-// ── Route: MealDB or Spoonacular based on URL param ──
-async function loadRecipe() {
-    const params  = new URLSearchParams(window.location.search);
-    const mealId  = params.get('id');
-    const spoonId = params.get('spoon');
-    const body    = document.getElementById('recipeBody');
-
-    if (mealId) {
-        // ── MealDB ──
-        try {
-            const res  = await fetch(`https://www.themealdb.com/api/json/v1/1/lookup.php?i=${mealId}`);
-            const data = await res.json();
-            if (data.meals && data.meals[0]) {
-                renderMealDB(data.meals[0]);
-            } else {
-                body.innerHTML = '<div class="loading-state">Recipe not found.</div>';
-            }
-        } catch {
-            body.innerHTML = '<div class="loading-state">Failed to load recipe.</div>';
+    try {
+        const res  = await fetch(`https://www.themealdb.com/api/json/v1/1/lookup.php?i=${mealId}`);
+        const data = await res.json();
+        if (data.meals && data.meals[0]) {
+            renderMealDB(data.meals[0]);
+        } else {
+            body.innerHTML = '<div class="loading-state">Recipe not found.</div>';
         }
-
-    } else if (spoonId) {
-        // ── Spoonacular ──
-        try {
-            const res  = await fetch(`https://api.spoonacular.com/recipes/${spoonId}/information?apiKey=${SPOONACULAR_KEY}`);
-            const data = await res.json();
-            if (data.id) {
-                renderSpoonacular(data);
-            } else {
-                body.innerHTML = '<div class="loading-state">Recipe not found.</div>';
-            }
-        } catch {
-            body.innerHTML = '<div class="loading-state">Failed to load recipe.</div>';
-        }
-
-    } else {
-        body.innerHTML = '<div class="loading-state">No recipe selected.</div>';
+    } catch {
+        body.innerHTML = '<div class="loading-state">Failed to load recipe.</div>';
     }
 }
 
