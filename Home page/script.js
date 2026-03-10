@@ -104,3 +104,16 @@ document.addEventListener("DOMContentLoaded", function () {
         });
     }
 });
+
+// --- Save button connection to backend (not fully implemented) ---
+// Add event listeners to the "Save" buttons and call the saveRecipe function from firebase-functions.js
+
+// Example 
+/*
+document.addEventListener('click', function(e) {
+    if (e.target.classList.contains('save-action-btn')) {
+        const mealId = e.target.closest('.food-card').dataset.mealId; // set data-meal-id on the card
+        saveRecipe(userId, folderName, { idMeal: mealId }); // define userId and folderName 
+    }
+});
+*/
