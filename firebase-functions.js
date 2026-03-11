@@ -21,9 +21,10 @@ function newUser(id, name, mail, color) {
 //Ex: users/uid/folders/cheatfood(savedRecipes: rid, rid2, rid3)
 
 
-function createFolder(id, folderName) {
+function createFolder(id, folderName, publicToggle) {
   const folderData = {
     name: folderName,
+    public: publicToggle,
     savedRecipes: []
   }
   const folder = doc(db, 'users/' + id + '/folders/' + folderName);
